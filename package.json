@@ -1,0 +1,7 @@
+{
+  "name": "kakao-api-wrapper",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "author": "delta-kor <deltakbot1@gmail.com>",
+  "license": "MIT"
+}

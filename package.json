@@ -3,5 +3,11 @@
   "version": "0.0.0",
   "main": "dist/index.js",
   "author": "delta-kor <deltakbot1@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "axios": "^0.20.0"
+  }
 }

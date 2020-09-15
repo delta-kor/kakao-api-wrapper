@@ -47,7 +47,7 @@ export default class DaumModule extends Module {
   ): Promise<DaumSearch<DaumWebDocument>> {
 
     const path = '/v2/search/web';
-    const params = { query: encodeURI(query), page, size, sort };
+    const params = { query, page, size, sort };
 
     return await Util.request<DaumSearch<DaumWebDocument>>(
       this.key,

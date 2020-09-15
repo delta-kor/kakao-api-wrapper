@@ -42,6 +42,11 @@ export interface MapCoordToAddressDocument {
   road_address: MapRoadAddress;
 }
 
+export interface MapTranscoordDocument {
+  x: number;
+  y: number;
+}
+
 export enum MapAddressType {
   REGION = 'REGION',
   ROAD = 'ROAD',
@@ -168,6 +173,25 @@ export default class MapModule extends Module {
     const params = { x, y, input_coord: inputSystem };
 
     return await Util.request<MapSearch<MapCoordToAddressDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async transcoord(
+    x: number,
+    y: number,
+    inputSystem: CoordinateSystem = CoordinateSystem.WGS84,
+    outputSystem: CoordinateSystem = CoordinateSystem.WGS84
+  ): Promise<MapSearch<MapTranscoordDocument>> {
+
+    const path = '/v2/local/geo/transcoord.json';
+    const params = { x, y, input_coord: inputSystem, output_coord: outputSystem };
+
+    return await Util.request<MapSearch<MapTranscoordDocument>>(
       this.key,
       this.protocol,
       this.host,

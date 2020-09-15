@@ -25,11 +25,31 @@ export interface MapAddressDocument {
   road_address: MapRoadAddress | null;
 }
 
+export interface MapCoordToRegionCodeDocument {
+  region_type: 'H' | 'B';
+  address_name: string;
+  region_1depth_name: string;
+  region_2depth_name: string;
+  region_3depth_name: string;
+  region_4depth_name: string;
+  code: string;
+  x: number;
+  y: number;
+}
+
 export enum MapAddressType {
   REGION = 'REGION',
   ROAD = 'ROAD',
   REGION_ADDR = 'REGION_ADDR',
   ROAD_ADDR = 'ROAD_ADDR'
+}
+
+export enum CoordinateSystem {
+  WGS84 = 'WGS84',
+  WCONGNAMUL = 'WCONGNAMUL',
+  CONGNAMUL = 'CONGNAMUL',
+  WTM = 'WTM',
+  TM = 'TM'
 }
 
 export interface MapAddress {
@@ -83,6 +103,25 @@ export default class MapModule extends Module {
     const params = { query, page, size };
 
     return await Util.request<MapSearch<MapAddressDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async coordToRegionCode(
+    x: number,
+    y: number,
+    inputSystem: CoordinateSystem = CoordinateSystem.WGS84,
+    outputSystem: CoordinateSystem = CoordinateSystem.WGS84
+  ): Promise<MapSearch<MapCoordToRegionCodeDocument>> {
+
+    const path = '/v2/local/geo/coord2regioncode.json';
+    const params = { x, y, input_coord: inputSystem, output_coord: outputSystem };
+
+    return await Util.request<MapSearch<MapCoordToRegionCodeDocument>>(
       this.key,
       this.protocol,
       this.host,

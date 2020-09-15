@@ -6,7 +6,8 @@
   "author": "delta-kor <deltakbot1@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublish": "tsc"
   },
   "dependencies": {
     "axios": "^0.20.0"

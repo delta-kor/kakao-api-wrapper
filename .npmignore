@@ -122,3 +122,6 @@ test/
 
 # src
 src/
+
+# ts
+tsconfig.json

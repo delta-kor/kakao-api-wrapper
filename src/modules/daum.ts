@@ -1,16 +1,16 @@
 import Module, { Protocol } from '../module';
 import Util from '../util';
 
-type DaumSearchDocuments<D extends DaumSearchDocument> = D[];
-
 interface DaumSearchDocument { }
+
+export type DaumSearchDocuments<D extends DaumSearchDocument> = D[];
 
 export interface DaumSearch<D extends DaumSearchDocument> {
   meta: DaumSearchMeta;
   documents: DaumSearchDocuments<D>;
 }
 
-interface DaumSearchMeta {
+export interface DaumSearchMeta {
   total_count: number;
   pageable_count: number;
   is_end: boolean;
@@ -21,6 +21,15 @@ export interface DaumWebDocument extends DaumSearchDocument {
   contents: string;
   title: string;
   url: string;
+}
+
+export interface DaumVideoDocument extends DaumSearchDocument {
+  title: string;
+  play_time: number;
+  thumbnail: string;
+  url: string;
+  datetime: string;
+  author: string;
 }
 
 export enum SearchSorting {
@@ -41,8 +50,8 @@ export default class DaumModule extends Module {
 
   public async web(
     query: string,
-    page: number = 1,
     size: number = 10,
+    page: number = 1,
     sort: SearchSorting = SearchSorting.ACCURACY
   ): Promise<DaumSearch<DaumWebDocument>> {
 
@@ -50,6 +59,25 @@ export default class DaumModule extends Module {
     const params = { query, page, size, sort };
 
     return await Util.request<DaumSearch<DaumWebDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async video(
+    query: string,
+    size: number = 10,
+    page: number = 1,
+    sort: SearchSorting = SearchSorting.ACCURACY
+  ): Promise<DaumSearch<DaumVideoDocument>> {
+
+    const path = '/v2/search/vclip';
+    const params = { query, page, size, sort };
+
+    return await Util.request<DaumSearch<DaumVideoDocument>>(
       this.key,
       this.protocol,
       this.host,

@@ -46,7 +46,8 @@ export default class Util {
     protocol: Protocol,
     host: string,
     path: string,
-  params: any): Promise<T> {
+    params: any
+  ): Promise<T> {
 
     const url = Util.join(protocol, host, path);
 

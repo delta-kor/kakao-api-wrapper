@@ -6,5 +6,8 @@
     "outDir": "./dist",
     "strict": true,
     "incremental": true
-  }
+  },
+  "exclude": [
+    "test/**/*"
+  ]
 }

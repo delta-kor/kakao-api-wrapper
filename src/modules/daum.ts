@@ -1,7 +1,33 @@
 import axios, { AxiosResponse } from 'axios';
 import Module, { Protocol } from '../module';
-import { SearchSorting } from '../types/daum';
 import Util from '../util';
+
+type DaumSearchDocuments<D extends DaumSearchDocument> = D[];
+
+interface DaumSearchDocument { }
+
+export interface DaumSearch<D extends DaumSearchDocument> {
+  meta: DaumSearchMeta;
+  documents: DaumSearchDocuments<D>;
+}
+
+interface DaumSearchMeta {
+  total_count: number;
+  pageable_count: number;
+  is_end: boolean;
+}
+
+export interface DaumWebDocument extends DaumSearchDocument {
+  datetime: string;
+  contents: string;
+  title: string;
+  url: string;
+}
+
+export enum SearchSorting {
+  ACCURACY = 'accuracy',
+  RECENCY = 'recency'
+}
 
 export default class DaumModule extends Module {
 
@@ -19,7 +45,7 @@ export default class DaumModule extends Module {
     page: number = 1,
     size: number = 10,
     sort: SearchSorting = SearchSorting.ACCURACY
-  ): Promise<any> {
+  ): Promise<DaumSearch<DaumWebDocument>> {
 
     const path = '/v2/search/web';
     const url = Util.join(this.protocol, this.host, path);
@@ -40,8 +66,7 @@ export default class DaumModule extends Module {
 
     }
 
-    const data = response.data;
-    return data;
+    return response.data;
 
   }
 

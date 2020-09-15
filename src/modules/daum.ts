@@ -17,24 +17,75 @@ export interface DaumSearchMeta {
 }
 
 export interface DaumWebDocument extends DaumSearchDocument {
-  datetime: string;
-  contents: string;
   title: string;
+  contents: string;
   url: string;
+  datetime: string;
 }
 
 export interface DaumVideoDocument extends DaumSearchDocument {
   title: string;
-  play_time: number;
-  thumbnail: string;
   url: string;
   datetime: string;
+  play_time: number;
+  thumbnail: string;
   author: string;
+}
+
+export interface DaumImageDocument extends DaumSearchDocument {
+  collection: string;
+  thumbnail_url: string;
+  image_url: string;
+  width: number;
+  height: number;
+  display_sitename: string;
+  doc_url: string;
+  datetime: string;
+}
+
+export interface DaumBlogDocument extends DaumSearchDocument {
+  title: string;
+  contents: string;
+  url: string;
+  blogname: string;
+  thumbnail: string;
+  datetime: string;
+}
+
+export interface DaumBookDocument extends DaumSearchDocument {
+  title: string;
+  contents: string;
+  url: string;
+  isbn: string;
+  datetime: string;
+  authors: string[];
+  publisher: string;
+  translators: string[];
+  price: number;
+  sale_price: number;
+  thumbnail: string;
+  status: string;
+}
+
+export interface DaumCafeDocument extends DaumSearchDocument {
+  title: string;
+  contents: string;
+  url: string;
+  cafename: string;
+  thumbnail: string;
+  datetime: string;
 }
 
 export enum SearchSorting {
   ACCURACY = 'accuracy',
   RECENCY = 'recency'
+}
+
+export enum BookSearchTarget {
+  TITLE = 'title',
+  ISBN = 'isbn',
+  PUBLISHER = 'publisher',
+  PERSON = 'person'
 }
 
 export default class DaumModule extends Module {
@@ -78,6 +129,83 @@ export default class DaumModule extends Module {
     const params = { query, page, size, sort };
 
     return await Util.request<DaumSearch<DaumVideoDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async image(
+    query: string,
+    size: number = 10,
+    page: number = 1,
+    sort: SearchSorting = SearchSorting.ACCURACY
+  ): Promise<DaumSearch<DaumImageDocument>> {
+
+    const path = '/v2/search/image';
+    const params = { query, page, size, sort };
+
+    return await Util.request<DaumSearch<DaumImageDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async blog(
+    query: string,
+    size: number = 10,
+    page: number = 1,
+    sort: SearchSorting = SearchSorting.ACCURACY
+  ): Promise<DaumSearch<DaumBlogDocument>> {
+
+    const path = '/v2/search/blog';
+    const params = { query, page, size, sort };
+
+    return await Util.request<DaumSearch<DaumBlogDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async book(
+    query: string,
+    size: number = 10,
+    page: number = 1,
+    sort: SearchSorting = SearchSorting.ACCURACY,
+    target: BookSearchTarget = BookSearchTarget.TITLE
+  ): Promise<DaumSearch<DaumBookDocument>> {
+
+    const path = '/v3/search/book';
+    const params = { query, page, size, sort, target };
+
+    return await Util.request<DaumSearch<DaumBookDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async cafe(
+    query: string,
+    size: number = 10,
+    page: number = 1,
+    sort: SearchSorting = SearchSorting.ACCURACY
+  ): Promise<DaumSearch<DaumCafeDocument>> {
+
+    const path = '/v2/search/cafe';
+    const params = { query, page, size, sort };
+
+    return await Util.request<DaumSearch<DaumCafeDocument>>(
       this.key,
       this.protocol,
       this.host,

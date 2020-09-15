@@ -21,8 +21,8 @@ export interface MapAddressDocument {
   address_type: MapAddressType;
   x: number;
   y: number;
-  address: MapAddress | null;
-  road_address: MapRoadAddress | null;
+  address: MapTotalAddress | null;
+  road_address: MapTotalRoadAddress | null;
 }
 
 export interface MapCoordToRegionCodeDocument {
@@ -35,6 +35,11 @@ export interface MapCoordToRegionCodeDocument {
   code: string;
   x: number;
   y: number;
+}
+
+export interface MapCoordToAddressDocument {
+  address: MapAddress;
+  road_address: MapRoadAddress;
 }
 
 export enum MapAddressType {
@@ -52,7 +57,7 @@ export enum CoordinateSystem {
   TM = 'TM'
 }
 
-export interface MapAddress {
+export interface MapTotalAddress {
   address_name: string;
   region_1depth_name: string;
   region_2depth_name: string;
@@ -67,7 +72,7 @@ export interface MapAddress {
   y: number;
 }
 
-export interface MapRoadAddress {
+export interface MapTotalRoadAddress {
   address_name: string;
   region_1depth_name: string;
   region_2depth_name: string;
@@ -80,6 +85,29 @@ export interface MapRoadAddress {
   zone_no: string;
   x: number;
   y: number;
+}
+
+export interface MapAddress {
+  address_name: string;
+  region_1depth_name: string;
+  region_2depth_name: string;
+  region_3depth_name: string;
+  mountain_yn: 'Y' | 'N';
+  main_address_no: string;
+  sub_address_no: string;
+}
+
+export interface MapRoadAddress {
+  address_name: string;
+  region_1depth_name: string;
+  region_2depth_name: string;
+  region_3depth_name: string;
+  road_name: string;
+  underground_yn: 'Y' | 'N';
+  main_building_no: string;
+  sub_building_no: string;
+  building_name: string;
+  zone_no: string;
 }
 
 export default class MapModule extends Module {
@@ -122,6 +150,24 @@ export default class MapModule extends Module {
     const params = { x, y, input_coord: inputSystem, output_coord: outputSystem };
 
     return await Util.request<MapSearch<MapCoordToRegionCodeDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async coordToAddress(
+    x: number,
+    y: number,
+    inputSystem: CoordinateSystem = CoordinateSystem.WGS84
+  ): Promise<MapSearch<MapCoordToAddressDocument>> {
+
+    const path = '/v2/local/geo/coord2address.json';
+    const params = { x, y, input_coord: inputSystem };
+
+    return await Util.request<MapSearch<MapCoordToAddressDocument>>(
       this.key,
       this.protocol,
       this.host,

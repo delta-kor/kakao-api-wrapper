@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
 import Module, { Protocol } from '../module';
 import Util from '../util';
 
@@ -48,25 +47,14 @@ export default class DaumModule extends Module {
   ): Promise<DaumSearch<DaumWebDocument>> {
 
     const path = '/v2/search/web';
-    const url = Util.join(this.protocol, this.host, path);
+    const params = { query: encodeURI(query), page, size, sort };
 
-    let response: AxiosResponse;
-
-    try {
-
-      response = await axios.get(url, {
-        params: { query: encodeURI(query), page, size, sort },
-        headers: { 'Authorization': Util.key(this.key) }
-      });
-
-    } catch (e) {
-
-      const response = e.response;
-      Util.reject(response);
-
-    }
-
-    return response.data;
+    return await Util.request<DaumSearch<DaumWebDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
 
   }
 

@@ -1,5 +1,5 @@
 import { Protocol } from './module';
-import { AxiosResponse } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 export class ApiError extends Error {
 
@@ -39,6 +39,35 @@ export default class Util {
 
   public static key(apiKey: string): string {
     return `KakaoAK ${apiKey}`;
+  }
+
+  public static async request<T>(
+    key: string,
+    protocol: Protocol,
+    host: string,
+    path: string,
+  params: any): Promise<T> {
+
+    const url = Util.join(protocol, host, path);
+
+    let response: AxiosResponse;
+
+    try {
+
+      response = await axios.get(url, {
+        params,
+        headers: { 'Authorization': Util.key(key) }
+      });
+
+    } catch (e) {
+
+      const response = e.response;
+      Util.reject(response);
+
+    }
+
+    return response.data;
+
   }
 
 }

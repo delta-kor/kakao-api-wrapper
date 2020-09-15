@@ -76,12 +76,12 @@ export interface DaumCafeDocument extends DaumSearchDocument {
   datetime: string;
 }
 
-export enum SearchSorting {
+export enum DaumSearchSorting {
   ACCURACY = 'accuracy',
   RECENCY = 'recency'
 }
 
-export enum BookSearchTarget {
+export enum DaumBookSearchTarget {
   TITLE = 'title',
   ISBN = 'isbn',
   PUBLISHER = 'publisher',
@@ -103,7 +103,7 @@ export default class DaumModule extends Module {
     query: string,
     size: number = 10,
     page: number = 1,
-    sort: SearchSorting = SearchSorting.ACCURACY
+    sort: DaumSearchSorting = DaumSearchSorting.ACCURACY
   ): Promise<DaumSearch<DaumWebDocument>> {
 
     const path = '/v2/search/web';
@@ -122,7 +122,7 @@ export default class DaumModule extends Module {
     query: string,
     size: number = 10,
     page: number = 1,
-    sort: SearchSorting = SearchSorting.ACCURACY
+    sort: DaumSearchSorting = DaumSearchSorting.ACCURACY
   ): Promise<DaumSearch<DaumVideoDocument>> {
 
     const path = '/v2/search/vclip';
@@ -141,7 +141,7 @@ export default class DaumModule extends Module {
     query: string,
     size: number = 10,
     page: number = 1,
-    sort: SearchSorting = SearchSorting.ACCURACY
+    sort: DaumSearchSorting = DaumSearchSorting.ACCURACY
   ): Promise<DaumSearch<DaumImageDocument>> {
 
     const path = '/v2/search/image';
@@ -160,7 +160,7 @@ export default class DaumModule extends Module {
     query: string,
     size: number = 10,
     page: number = 1,
-    sort: SearchSorting = SearchSorting.ACCURACY
+    sort: DaumSearchSorting = DaumSearchSorting.ACCURACY
   ): Promise<DaumSearch<DaumBlogDocument>> {
 
     const path = '/v2/search/blog';
@@ -179,8 +179,8 @@ export default class DaumModule extends Module {
     query: string,
     size: number = 10,
     page: number = 1,
-    sort: SearchSorting = SearchSorting.ACCURACY,
-    target: BookSearchTarget = BookSearchTarget.TITLE
+    sort: DaumSearchSorting = DaumSearchSorting.ACCURACY,
+    target: DaumBookSearchTarget = DaumBookSearchTarget.TITLE
   ): Promise<DaumSearch<DaumBookDocument>> {
 
     const path = '/v3/search/book';
@@ -199,7 +199,7 @@ export default class DaumModule extends Module {
     query: string,
     size: number = 10,
     page: number = 1,
-    sort: SearchSorting = SearchSorting.ACCURACY
+    sort: DaumSearchSorting = DaumSearchSorting.ACCURACY
   ): Promise<DaumSearch<DaumCafeDocument>> {
 
     const path = '/v2/search/cafe';

@@ -14,6 +14,7 @@ export interface MapSearchMeta {
   total_count: number;
   pageable_count: number;
   is_end: boolean;
+  same_name?: MapRegionInfo;
 }
 
 export interface MapAddressDocument {
@@ -47,6 +48,21 @@ export interface MapTranscoordDocument {
   y: number;
 }
 
+export interface MapKeywordDocument {
+  id: string;
+  place_name: string;
+  category_name: string;
+  category_group_code: string;
+  category_group_name: string;
+  phone: string;
+  address_name: string;
+  road_address_name: string;
+  x: number;
+  y: number;
+  place_url: string;
+  distance: string;
+}
+
 export enum MapAddressType {
   REGION = 'REGION',
   ROAD = 'ROAD',
@@ -60,6 +76,32 @@ export enum CoordinateSystem {
   CONGNAMUL = 'CONGNAMUL',
   WTM = 'WTM',
   TM = 'TM'
+}
+
+export enum MapSearchSorting {
+  ACCURACY = 'accuracy',
+  DISTANCE = 'distance'
+}
+
+export enum MapCategory {
+  MART = 'MT1',
+  CONVENIENCE_STORE = 'CS2',
+  PRE_SCHOOL = 'PS3',
+  SCHOOL = 'SC4',
+  ACADEMY = 'AC5',
+  PARKING = 'PK6',
+  OIL = 'OL7',
+  SUBWAY = 'SW8',
+  BANK = 'BK9',
+  CULTURAL_FACILITY = 'CT1',
+  AGENCY = '중개업소',
+  PUBLIC_ENTERPRISE = 'PO3',
+  ATTRACTION = 'AT4',
+  ACCOMMODATION = 'AD5',
+  FOOD = 'FD6',
+  CAFE = 'CE7',
+  HOSPITAL = 'HP8',
+  PHARMACY = 'PM9'
 }
 
 export interface MapTotalAddress {
@@ -113,6 +155,24 @@ export interface MapRoadAddress {
   sub_building_no: string;
   building_name: string;
   zone_no: string;
+}
+
+export interface MapKeywordSearchParams {
+  query: string;
+  category?: MapCategory;
+  x?: number;
+  y?: number;
+  radius?: number;
+  rect?: string;
+  page?: number;
+  size?: number;
+  sort?: MapSearchSorting;
+}
+
+export interface MapRegionInfo {
+  region: string[];
+  keyword: string;
+  selected_region: string;
 }
 
 export default class MapModule extends Module {
@@ -192,6 +252,38 @@ export default class MapModule extends Module {
     const params = { x, y, input_coord: inputSystem, output_coord: outputSystem };
 
     return await Util.request<MapSearch<MapTranscoordDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async keyword(params: MapKeywordSearchParams): Promise<MapSearch<MapKeywordDocument>>;
+  public async keyword(query: string, size?: number, page?: number): Promise<MapSearch<MapKeywordDocument>>;
+  public async keyword(
+    query: any,
+    size: number = 10,
+    page: number = 1
+  ): Promise<MapSearch<MapKeywordDocument>> {
+
+    const path = '/v2/local/search/keyword.json';
+    let params: any;
+
+    if(typeof query === 'object') {
+
+      params = query;
+
+    } else {
+
+      params = {
+        query, page, size
+      };
+
+    }
+
+    return await Util.request<MapSearch<MapKeywordDocument>>(
       this.key,
       this.protocol,
       this.host,

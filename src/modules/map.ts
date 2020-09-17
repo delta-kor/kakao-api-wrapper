@@ -63,6 +63,21 @@ export interface MapKeywordDocument {
   distance: string;
 }
 
+export interface MapCategoryDocument {
+  id: string;
+  place_name: string;
+  category_name: string;
+  category_group_code: MapCategory;
+  category_group_name: string;
+  phone: string;
+  address_name: string;
+  road_address_name: string;
+  x: string;
+  y: string;
+  place_url: string;
+  distance: string;
+}
+
 export enum MapAddressType {
   REGION = 'REGION',
   ROAD = 'ROAD',
@@ -162,6 +177,17 @@ export interface MapKeywordSearchParams {
   category?: MapCategory;
   x?: number;
   y?: number;
+  radius?: number;
+  rect?: string;
+  page?: number;
+  size?: number;
+  sort?: MapSearchSorting;
+}
+
+export interface MapCategorySearchParams {
+  category_group_code?: MapCategory;
+  x?: string;
+  y?: string;
   radius?: number;
   rect?: string;
   page?: number;
@@ -284,6 +310,49 @@ export default class MapModule extends Module {
     }
 
     return await Util.request<MapSearch<MapKeywordDocument>>(
+      this.key,
+      this.protocol,
+      this.host,
+      path, params
+    );
+
+  }
+
+  public async category(params: MapCategorySearchParams): Promise<MapSearch<MapCategoryDocument>>;
+  public async category(
+    category: MapCategory,
+    x: number,
+    y: number,
+    radius: number,
+    size: number,
+    page: number
+  ): Promise<MapSearch<MapCategoryDocument>>;
+  public async category(
+    category: any,
+    x?: number,
+    y?: number,
+    radius?: number,
+    size: number = 10,
+    page: number = 1
+  ): Promise<MapSearch<MapCategoryDocument>> {
+
+    const path = '/v2/local/search/category.json';
+    let params: any;
+
+    if(typeof category === 'object') {
+
+      params = category;
+
+    } else {
+
+      params = {
+        category_group_code: category,
+        x, y, radius, size, page
+      };
+
+    }
+
+    return await Util.request<MapSearch<MapCategoryDocument>>(
       this.key,
       this.protocol,
       this.host,

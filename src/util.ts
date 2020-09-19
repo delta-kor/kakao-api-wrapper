@@ -62,8 +62,7 @@ export default class Util {
 
     } catch (e) {
 
-      const response = e.response;
-      Util.reject(response);
+      Util.reject(e.response);
 
     }
 
